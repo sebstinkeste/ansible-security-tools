@@ -1,0 +1,20 @@
+---
+- name: template maldetect config | RedHat  | Maldet
+  template:
+    src: "maldetect/conf.maldet.j2"
+    dest: "/usr/local/maldetect/conf.maldet"
+    owner: "root"
+    group: "root"
+    mode: "644"
+
+- name: Create dir /var/log/maldetect | RedHat  | Maldet
+  file:
+    path: "/var/log/maldetect/"
+    state: "directory"
+
+- name: Symlink maldetect log in /var/log/maldetect | RedHat  | Maldet
+  file:
+    src: "/usr/local/maldetect/logs/event_log"
+    dest: "/var/log/maldetect/event_log"
+    state: "link"
+

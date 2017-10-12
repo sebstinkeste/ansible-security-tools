@@ -1,0 +1,82 @@
+---
+- name: 'Include cron.yml'
+  include: 'maldetect/cron.yml'
+  when: maldet_install == true and maldet_cron is defined
+  tags:
+    - maldetect_cron
+    - maldetect
+
+- name: 'Include install.yml | Debian'
+  include: 'maldetect/Debian/install.yml'
+  when: maldet_install == true and ansible_os_family == "Debian"
+  tags:
+    - maldetect_install
+    - maldetect
+
+- name: 'Include install.yml | RedHat'
+  include: 'maldetect/RedHat/install.yml'
+  when: maldet_install == true and ansible_os_family == "RedHat"
+  tags:
+    - maldetect_install
+    - maldetect
+
+- name: 'Include config.yml'
+  include: 'maldetect/config.yml'
+  when: maldet_install == true
+  tags:
+    - maldetect_config
+    - maldetect
+
+### Clamav ####
+
+- name: 'Include clamav/Debian/install.yml'
+  include: 'clamav/Debian/install.yml'
+  when: clamav_install == true and ansible_os_family == "Debian"
+  tags:
+    - clamav
+    - clamav_install
+
+- name: 'Include clamav/RedHat/install.yml'
+  include: 'clamav/RedHat/install.yml'
+  when: clamav_install == true and ansible_os_family == "RedHat"
+  tags:
+    - clamav
+    - clamav_install
+
+  ### Lynis ###
+
+- name: Debian specific vars | Debian
+  include_vars: 'Debian.yml'
+  when: lynis_install == true
+  tags:
+    - lynis_install
+    - lynis
+
+
+- name: Include debian Install | Debian
+  include: 'lynis/Debian/install.yml'
+  when: lynis_install == true and ansible_os_family == "Debian"
+  tags:
+    - lynis_install
+    - lynis
+
+- name: RedHat specific vars | RedHat
+  include_vars: 'RedHat.yml'
+  when: lynis_install == true
+  tags:
+    - lynis_install
+    - lynis
+
+- name: Include RedHat Install | RedHat
+  include: 'lynis/RedHat/install.yml'
+  when: lynis_install == true  and ansible_os_family == "RedHat"
+  tags:
+    - lynis_install
+    - lynis
+
+- name: Include Config
+  include: 'lynis/config.yml'
+  when: lynis_install == true
+  tags:
+    - lynis_configure
+    - lynis

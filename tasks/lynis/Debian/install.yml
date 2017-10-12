@@ -1,0 +1,35 @@
+---
+- name: check  apt-transport-https package installed |Debian | lynis
+  stat:
+    path: '/usr/lib/apt/methods/https'
+  register: https
+
+- name: install  apt-transport-https package |Debian | lynis
+  apt:
+    name: "apt-transport-https"
+    state: "present"
+  when: https.stat.exists == false
+
+- name: Add lynis key |Debian | lynis
+  apt_key:
+    keyserver: "{{ item.value.keyserver }}"
+    id: "{{ item.value.id }}"
+    state: "present"
+  with_dict: "{{ lynis_repo }}"
+  register: event_lynis_apt_key
+
+- name: Add lynis repository |Debian | lynis
+  apt_repository:
+    repo: "{{ lynis_apt_repo }}"
+    state: "present"
+  with_dict: "{{ lynis_repo }}"
+  register: event_lynis_apt_repo
+
+- name: install Lynis package |Debian | lynis
+  apt:
+    name: "lynis"
+    state: "present"
+  when: event_lynis_apt_key.changed or event_lynis_apt_repo.changed
+
+
+

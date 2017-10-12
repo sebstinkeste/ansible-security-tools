@@ -1,0 +1,6 @@
+---
+- name: enable crond | Maldet
+  become: true
+  shell: "systemctl enable crond"
+  changed_when: false
+

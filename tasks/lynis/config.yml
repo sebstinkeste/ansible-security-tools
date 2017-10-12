@@ -1,0 +1,16 @@
+---
+- name: template default.prf
+  template:
+    src: "lynis/default.prf.j2"
+    dest: "{{ lynis_dir }}/default.prf"
+    owner: "root"
+    group: "root"
+    mode: "644"
+
+- name: template developer.prf
+  template:
+    src: "lynis/developer.prf.j2"
+    dest: "{% if ansible_os_family == 'Debian' %}{{ lynis_dir }}/developer.prf{% else %}{{ lynis_dir }}/custom.prf{% endif %}"
+    owner: "root"
+    group: "root"
+    mode: "644"

@@ -1,0 +1,58 @@
+---
+- name: Clamav | install epel-release | Clamav | RedHat
+  yum:
+    name: 'epel-release'
+    state: present
+
+- name: Clamav | install packages | Clamav | RedHat
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ clamav_redhat_packages }}"
+
+- name: Clamav | Add systemd service file | Clamav | RedHat
+  template:
+    src: 'clamav/clam-freshclam.service.j2'
+    dest: '/usr/lib/systemd/system/clam-freshclam.service'
+  notify:
+    - enable clam-freshclam
+    - start clam-freshclam
+
+- name: template clamd.conf.j2 | Clamav | RedHat
+  template:
+    src: 'clamav/clamd.conf.j2'
+    dest: '/etc/clamd.d/clamd.conf'
+    mode: 0644
+    owner: root
+    group: root
+
+- name: remove clamd@.service | Clamav | RedHat
+  file:
+    path: '/usr/lib/systemd/system/clamd@.service'
+    state: absent
+
+- name: template clamd.service | Clamav | RedHat
+  template:
+    src: 'clamav/clamd.service.j2'
+    dest: '/usr/lib/systemd/system/clamd.service'
+    mode: '0644'
+    owner: 'root'
+    group: 'root'
+
+- name: check if /usr/lib/systemd/system/clamdscan.service exists | RedHat
+  stat:
+    path: '/usr/lib/systemd/system/clamdscan.service'
+  register: clamdscan_file
+
+- name: 'move /usr/lib/systemd/system/clamd@scan.service to clamdscan.service | RedHat'
+  shell: "mv /usr/lib/systemd/system/clamd@scan.service /usr/lib/systemd/system/clamdscan.service"
+  when: clamdscan_file.stat.exists == False
+  register: clamd_rename
+
+
+- name: "enable {{item}} service | RedHat  | Clamav"
+  shell: "systemctl enable clamd.service"
+  when: clamd_rename.changed
+  notify: clamd_start
+
+

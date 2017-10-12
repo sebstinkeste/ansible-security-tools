@@ -1,0 +1,136 @@
+## Installation Variables
+
+clamav_install     : false
+maldet_install     : false
+lynis_install      : false
+
+## Maldetect Variables
+
+maldetect_version  : "1.5"
+
+maldetect_install_url    : "http://www.rfxn.com/downloads"
+maldetect_url            : "{{ maldetect_install_url }}/maldetect-{{ maldetect_version }}.tar.gz"
+maldetect_tar_dest_dir   : "/tmp"
+maldetect_dest_dir       : "/opt"
+
+maldet_email_alert       : '0'
+maldet_email_subj        : 'maldet alert from $(hostname)'
+maldet_email_addr        : 'you@domain.com'
+maldet_email_ignore_clean: '0'
+maldet_quar_hits         : '0'
+maldet_quar_susp         : '0'
+maldet_quar_susp_minuid  : '500'
+maldet_maxdepth          : '15'
+maldet_minfilesize       : '32'
+maldet_maxfilesize       : '768'
+maldet_hexdepth          : '61440'
+maldet_hex_fifo_scan     : '1'
+maldet_hex_fifo_depth    : '524288'
+maldet_clamav_scan       : '0'
+maldet_public_scan       : '0'
+maldet_string_length_scan: '0'
+maldet_string_length     : '150000'
+maldet_inotify_base_watches: '15360'
+maldet_inotify_minuid    : '500'
+maldet_inotify_webdir    : 'public_html'
+maldet_inotify_stime     : '0'
+maldet_inotify_nice      : '10'
+
+maldet_cron: []
+
+#### Clamav default variables for centos7 ####
+
+clamav_redhat_packages:
+  - 'clamav-server'
+  - 'clamav-data'
+  - 'clamav-update'
+  - 'clamav-filesystem'
+  - 'clamav'
+  - 'clamav-scanner-systemd'
+  - 'clamav-devel'
+  - 'clamav-lib '
+  - 'clamav-server-systemd'
+
+## Clamav for centos7 /etc/clamd.d/clamd.conf ###
+
+clamav_pidfile           : '/var/run/clamd.scan/clamd.pid'
+clamav_localsocket       : '/var/run/clamd.scan/clamd.sock'
+clamav_user              : 'clamscan'
+
+### Lynis default variables ####
+lynis_apt_repo           : "{{ item.value.url }} {{ ansible_distribution_release }} {{ item.value.section}}"
+
+lynis_repo: []
+
+lynis_dir                : "/etc/lynis"
+
+## /etc/lynis/default.prf default configuration
+lynis_compressed_uploads      : "yes"
+lynis_upload_server           : ""
+lynis_upload_options          : ""
+lynis_language                : ""
+lynis_license_key             : ""
+lynis_error_on_warnings       : "no"
+lynis_machine_role            : "server"
+lynis_profile_name            : "Default Audit Template"
+lynis_pause_between_tests     : "0"
+lynis_show_tool_tips          : "yes"
+lynis_quick                   : "no"
+lynis_refresh_repositories    : "yes"
+lynis_show_report_solution    : "yes"
+lynis_skip_plugins            : "no"
+lynis_test_scan_mode          : "full"
+lynis_verbose                 : "no"
+
+lynis_apache_servertokens:
+  - "Prod:"
+lynis_ssl_certificates_paths: "/etc/letsencrypt:/etc/pki:/etc/ssl:/usr/local/share/ca-certificates:/var/www:/srv/www"
+
+lynis_permfile:
+  - path: "/etc/lilo.conf"
+    perms: "rw-------"
+    owner: "root:-"
+    action: "WARN"
+
+lynis_permdir:
+  - path: "/root/.ssh"
+    perms: "rwx------"
+    owner: "root:-"
+    action: "WARN"
+
+lynis_openldap_slapd_conf:
+  permissions: "640-600:"
+  owner: "ldap-root:"
+
+lynis_plugin:
+  - "compliance"
+  - "configuration"
+  - "crypto"
+  - "docker"
+  - "control-panels"
+  - "crypto"
+  - "dns"
+  - "file-integrity"
+  - "file-systems"
+  - "firewalls"
+  - "forensics"
+  - "intrusion-detection"
+  - "intrusion-prevention"
+  - "kernel"
+  - "malware"
+  - "memory"
+  - "nginx"
+  - "pam"
+  - "processes"
+  - "security-modules"
+  - "software"
+  - "system-integrity"
+  - "systemd"
+  - "users"
+
+## /etc/lynis/developer.prf default configuration
+lynis_dev_debug             : "yes"
+lynis_dev_developer_mode    : "yes"
+lynis_dev_quick             : "yes"
+lynis_dev_strict            : "yes"
+lynis_dev_verbose           : "yes"

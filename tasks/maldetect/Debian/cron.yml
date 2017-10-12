@@ -1,0 +1,6 @@
+---
+- name: install cron for Debian | Maldet
+  apt:
+    name: cron
+    update_cache: yes
+    state: present

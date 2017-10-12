@@ -1,0 +1,24 @@
+---
+- name: cron_start
+  service: name=cron state=started
+  when: ansible_os_family == "Debian"
+
+- name: cron_start
+  become: true
+  shell: "systemctl start crond"
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: crond_start
+  command: "/etc/init.d/crond start"
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "6"
+
+
+- name: enable clam-freshclam
+  shell: 'systemctl enable clam-freshclam.service'
+
+- name: start clam-freshclam
+  shell: 'systemctl start clam-freshclam.service'
+
+- name: clamd_start
+  shell: "systemctl start clamd.service"
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"

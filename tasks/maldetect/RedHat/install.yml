@@ -1,0 +1,32 @@
+---
+- name: check maldetect already installed | Maldet
+  stat:
+    path: "/usr/local/maldetect"
+  register: maldetect
+
+- name: "download | Maldet"
+  get_url:
+    url: "{{ maldetect_url }}"
+    dest: "{{maldetect_tar_dest_dir }}/maldetect-{{ maldetect_version }}.tar.gz"
+  when: maldetect.stat.exists == False
+
+- name: "extract | Maldet"
+  unarchive:
+    src: "{{maldetect_tar_dest_dir }}/maldetect-{{ maldetect_version }}.tar.gz"
+    dest: "{{ maldetect_dest_dir }}/"
+    copy: "no"
+    owner: 'root'
+    group: 'root'
+    mode: '750'
+  when: maldetect.stat.exists == False
+  register: extract_maldetect
+
+- name: check maldetect version | Maldet
+  shell: "find {{ maldetect_dest_dir }} -name maldetect*"
+  register: maldet_version
+  changed_when: false
+
+- name: "install.sh | Maldet"
+  shell: "cd {{ maldet_version.stdout }} && ./install.sh"
+  when: extract_maldetect.changed
+

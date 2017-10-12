@@ -1,0 +1,31 @@
+---
+- name: check cron already installed | RedHat  | Maldet
+  stat:
+    path: "/etc/init.d/cron"
+  register: check_cron
+
+
+- name: Include cron.yml | RedHat | Maldet
+  include: RedHat/cron.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Include cron.yml | Ubuntu Xenial | Maldet
+  include: Debian/cron.yml
+  when: ansible_os_family == 'Debian' and check_cron.stat.exists == false
+
+- name: custom cron configure | RedHat  | Maldet
+  cron:
+    name: '{{ item.name }}'
+    job: '/usr/local/maldetect/maldet -b -r {{ item.paths }}'
+    cron_file: "{{ item.cron_file|default('/etc/cron.d/maldet_custom') }}"
+    user: '{{item.user|default("root")}}'
+    minute: '{{ item.minute|default("*") }}'
+    hour: '{{ item.hour|default("*") }}'
+    day: '{{ item.day|default("*") }}'
+    month: '{{ item.month|default("*") }}'
+    weekday: '{{ item.weekday|default("*") }}'
+  when: "maldet_cron is defined"
+  with_items: "{{ maldet_cron }}"
+  notify:
+    - cron_start
+    - crond_start

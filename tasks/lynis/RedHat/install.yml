@@ -1,0 +1,28 @@
+---
+- name: Ensure that cURL, NSS, openssl, and CA certificates are up-to-date | RedHat | lynis
+  yum:
+    name: "{{ item }}"
+    update_cache: "yes"
+  with_items:
+    - "curl"
+    - "nss"
+    - "openssl"
+    - "ca-certificates"
+
+- name: Add Repository | RedHat  | lynis
+  yum_repository:
+    name: "{{ item.key }}"
+    description: "{{ item.value.description }}"
+    baseurl: "{{ item.value.baseurl }}"
+    enabled: "{{ item.value.enabled }}"
+    gpgkey: "{{ item.value.gpgkey }}"
+    gpgcheck: "{{ item.value.gpgcheck }}"
+  with_dict: "{{ lynis_yum_repo }}"
+  register: event_lynis_repo
+
+- name: install linys | RedHat  | lynis
+  yum:
+    name: "lynis"
+    update_cache: "yes"
+    state: "present"
+  when: event_lynis_repo.changed

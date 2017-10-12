@@ -1,0 +1,7 @@
+---
+lynis_repo:
+  'lynis_repository':
+     keyserver: "keyserver.ubuntu.com"
+     id: "C80E383C3DE9F082E01391A0366C67DE91CA5D5F"
+     url: "deb https://packages.cisofy.com/community/lynis/deb/"
+     section: "main"
