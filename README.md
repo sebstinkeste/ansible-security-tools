@@ -61,11 +61,11 @@ None
 ## Variables Maldetect
 
 
-| Variables |  Type  | Default |  Descriptions |
-|---|---|---|---|---|
+ Variables |  Type  | Default 
+|---|---|---|
 | maldet_email_alert | number | 0 |
-| maldet_email_subj | string | |
-| maldet_email_addr | string | |
+| maldet_email_subj | string | maldet alert from $(hostname) |
+| maldet_email_addr | string | you@domain.com |
 | maldet_email_ignore_clean | number | 0 |
 | maldet_quar_hits | number | 0 |
 | maldet_quar_susp | number | 0 |
